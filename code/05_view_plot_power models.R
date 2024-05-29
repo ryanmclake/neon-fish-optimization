@@ -76,7 +76,7 @@ d2 %>%
   ylim(c(0,1))+
   ylab("Power")+
   xlab("Years into sampling")+
-  labs(title="5% trend with 1 fixed reach")+
+  labs(title="5% trend with 3 fixed reaches")+
   theme_classic()
 
 
