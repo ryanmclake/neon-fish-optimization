@@ -11,6 +11,9 @@ library(doBy, warn.conflicts = FALSE)
 library(reshape2, warn.conflicts = FALSE)
 library(arm, warn.conflicts = FALSE)
 library(fuzzyjoin, warn.conflicts = FALSE)
+library(ubms)
+library(brms)
+library(viridis)
 
 predict_function <- function(x, beta, alpha){
   est <- (alpha*x)/(beta+x)
@@ -48,7 +51,7 @@ mean_wetted_widths = rea$rea_widthFieldData |>
   mutate(year = year(collectDate),
          month = month(collectDate),
          year_month = paste(year,month, sep = "_")) |>
-  group_by(month, year, siteID) |>
+  group_by(siteID, year, month) |>
   summarize(mean_wetted_width_m = mean(wettedWidth, na.rm = T),
             sd_wetted_width_m = sd(wettedWidth, na.rm = T))
 
@@ -59,38 +62,42 @@ reach_lengths = fish$fsh_fieldData |>
   filter(n == 1)
 
 EF_events <- fsh_fieldData |>
-  filter(siteID %!in% lakesites) |>
-  filter(grepl("fixed",fixedRandomReach)) |>
-  select(reachID, fixedRandomReach)
+  dplyr::filter(siteID %!in% lakesites) |>
+  dplyr::filter(grepl("fixed",fixedRandomReach)) |>
+  dplyr::select(reachID, fixedRandomReach)
 
 EF_count <- fsh_bulkCount |>
-  filter(siteID %!in% lakesites) |>
-  filter(grepl("e-fisher",eventID)) |>
-  select(eventID, passNumber, bulkFishCount) |>
-  group_by(eventID, passNumber) |>
-  summarize(totalFish = sum(bulkFishCount))
+  dplyr::filter(siteID %!in% lakesites) |>
+  dplyr::filter(grepl("e-fisher",eventID)) |>
+  dplyr::select(eventID, passNumber, bulkFishCount) |>
+  dplyr::group_by(eventID, passNumber) |>
+  dplyr::summarize(totalFish = sum(bulkFishCount))
 
 EF_fish <- fsh_perFish |>
-  filter(siteID %!in% lakesites) |>
-  filter(grepl("e-fisher",eventID)) |>
-  select(eventID, passNumber, taxonID) |>
-  group_by(eventID, passNumber) |>
+  dplyr::filter(siteID %!in% lakesites) |>
+  dplyr::filter(grepl("e-fisher",eventID)) |>
+  dplyr::select(eventID, passNumber, taxonID) |>
+  dplyr::group_by(eventID, passNumber) |>
   tally()
 
 EF_joined <- EF_fish |>
-  left_join(EF_count, by = c("eventID", "passNumber")) |>
-  mutate(totalFish = ifelse(is.na(totalFish), 0, totalFish),
+  dplyr::left_join(EF_count, by = c("eventID", "passNumber")) |>
+  dplyr::mutate(totalFish = ifelse(is.na(totalFish), 0, totalFish),
          summed_fish_per_pass = n + totalFish) |>
   separate(eventID, into = c("siteID", "date", "reach"), remove = F) |>
-  mutate(reachID = paste0(siteID,".",date,".",reach)) |>
-  mutate(date = ymd(date)) %>%
-  left_join(., EF_events, by = "reachID", relationship = "many-to-many") %>%
-  group_by(reachID) |>
-  filter(n() == 3) %>%
-  select(-eventID, -n,  -totalFish) |>
+  dplyr::mutate(reachID = paste0(siteID,".",date,".",reach)) |>
+  dplyr::mutate(date = ymd(date)) %>%
+  dplyr::left_join(., EF_events, by = "reachID", relationship = "many-to-many") %>%
+  dplyr::group_by(reachID) |>
+  dplyr::filter(n() == 3) %>%
+  dplyr::select(-eventID, -n,  -totalFish) |>
   pivot_wider(names_from = passNumber, values_from = summed_fish_per_pass) |>
   na.omit() |>
-  mutate(increased = case_when(`3` >= `1` ~ "no depletion", 
+  dplyr::mutate(increased = case_when(`3` >= `1` ~ "no depletion", 
                                TRUE ~ "depletion")) %>%
-  filter(increased == "depletion")
+  filter(increased == "depletion") %>%
+  left_join(., reach_lengths, by = "reachID") %>%
+  dplyr::mutate(year = lubridate::year(date),
+                month = lubridate::month(date))
+  
 

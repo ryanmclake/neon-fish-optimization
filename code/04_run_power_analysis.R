@@ -17,7 +17,7 @@ for(g in 1:length(sites)){
       left_join(., total_prob_summary, by = c("reachID"), relationship = "many-to-many") %>%
       na.omit(.) %>%
       rename(cap_prob = value, cap_prob_low = .lower, cap_prob_high = .upper) %>%
-      filter(site_id == sites[g]) %>%
+      filter(siteID == sites[g]) %>%
       na.omit(.)
     
     mean_wetted_width_pwr <- mean_wetted_widths %>% filter(siteID == sites[g])
@@ -46,9 +46,7 @@ for(g in 1:length(sites)){
     model.p=lm(p.logit ~ WidthStd , data=data_for_model)
     summary(model.p)
     
-    
-    
-    n.sims=500 				                                                              # the number of simulations
+    n.sims=250 				                                                              # the number of simulations
     n.passes=3 				                                                              # the number of passes
     
     ## each of the below are used to populate the empty data frame power.table
@@ -67,9 +65,9 @@ for(g in 1:length(sites)){
                               power.cs.cnvg=numeric(0))		                          # populated with value from monitoring of model convergence in the three pass method
     
     
-    for(n.sites in c(1, 3)){ 			                                                  # add  number of sites
-      for(n.years in c(seq(from = 10, to = 30, by = 5))){ 		                        # add  number of years
-        for(rhat in c(-0.1, -0.075, -0.05, -0.025, 0, 0.025, 0.05, 0.075, 1)){ 		                                # add  mean rate of population trends(s)
+    for(n.sites in c(1)){ 			                                                  # add  number of sites
+      for(n.years in c(seq(from = 5, to = 30, by = 5))){ 		                        # add  number of years
+        for(rhat in c(-0.05)){ 		                                # add  mean rate of population trends(s)
           
           ## start simulations
           for(s in 1:n.sims){  
@@ -152,7 +150,7 @@ for(g in 1:length(sites)){
             #   mutate(CSEst = abs(CSEst))
             
             
-            # used to estimate the abundance (N) and capture probability (p) from the simulated data
+            #used to estimate the abundance (N) and capture probability (p) from the simulated data
             CStrub1<-apply(y, MARGIN=c(1,2), FUN=removal,
                            method="CarleStrub", just.ests=TRUE)
 
@@ -213,7 +211,7 @@ for(g in 1:length(sites)){
     ## power.table stores all of the results after simulations have been completed for all combinations of number of sites, number of years, and for each rate of population decline.  In this example the table is populated with p-values < 0.05 for both single pass and three pass methods. 
     
     ##this saves the results as a .csv file called PowerSims to the working directory
-    write.csv(power.table, file=paste0("./processed_data/3_site_mean/PowerSims_3_reach_2xYr_cap_low_estimate_",sites[g],".csv"))
+    write.csv(power.table, file=paste0(getwd(),"/output/PowerSims_1reach_",sites[g],".csv"))
     
   }, error=function(e){cat("ERROR :",conditionMessage(e), "\n")})
   
