@@ -7,11 +7,11 @@ Ryan McClure and Jeff Wesner
 
 This repository quantifies stream fish population trends using the NEON
 electrofishing data. The purpose of the repository is five-fold:
-1: Wrangle the NEON fish data
-2: Estimate the fish populations using across sites using our own model and logistic models from the `FSA` package. 
-3: Estimate capture efficiencies using a Bayesian multinomial Poisson model with the `ubms` package
-4: Run a power analysis that evaluates how changing from 3 fixed reaches to 1 changes the number of years to which a declining annual trend of 5% is signiciantly detected
-5: Visualize the power analysis
+- 1: Wrangle the NEON fish data
+- 2: Estimate the fish populations using across sites using our own model and logistic models from the `FSA` package. 
+- 3: Estimate capture efficiencies using a Bayesian multinomial Poisson model with the `ubms` package
+- 4: Run a power analysis that evaluates how changing from 3 fixed reaches to 1 changes the number of years to which a declining annual trend of 5% is signiciantly detected
+- 5: Visualize the power analysis
 
 ## Data sets
 
