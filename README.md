@@ -29,7 +29,7 @@ NEON records the length (m) of the pass in `DP1.20190.001$fsh_fieldData$measured
 
 To obtain the sampling area, we first get an average wetted width per site (in m). Then we multiply that by the sampled length (in m) to arrive at a sampling area estimate (in $\text{m}^2$). These values are used as a correction factor in the power analysis models. 
 
-### 1.2) Tally fish numbers from three sources
+### 1.2) Tally total fish numbers from two tables
 
 To get the number of fish caught per pass, we have to combine two data sources in the electrofishing data set (DP1.20107.001): `fsh_perFish` and `fsh_bulkCount`. NEON field scientists measure the first 50 fish from each species per pass and place those
 values in `DP1.20107.001$fsh_perFish` table. Field staff then bulk count the rest and places those values in the `DP1.20107.001$fsh_bulkCount` table. Data are then filtered to exclude samples that only contain a single pass. The values can then be combined using their eventID between the tables.
