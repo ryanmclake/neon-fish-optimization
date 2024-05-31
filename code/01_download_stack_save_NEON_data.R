@@ -100,5 +100,5 @@ EF_joined <- EF_fish |>
   left_join(., reach_lengths, by = "reachID") %>%
   dplyr::mutate(year = lubridate::year(date),
                 month = lubridate::month(date))
-  
+
 
