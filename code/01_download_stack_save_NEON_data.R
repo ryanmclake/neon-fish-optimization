@@ -14,6 +14,7 @@ library(fuzzyjoin, warn.conflicts = FALSE)
 library(ubms, warn.conflicts = FALSE)
 library(brms, warn.conflicts = FALSE)
 library(viridis, warn.conflicts = FALSE)
+library(sf, warn.conflicts = FALSE)
 
 predict_function <- function(x, beta, alpha){
   est <- (alpha*x)/(beta+x)
