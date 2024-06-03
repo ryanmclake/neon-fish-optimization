@@ -11,12 +11,6 @@ if (!"pacman" %in% installed.packages()) install.packages("pacman")
 pacman::p_load(sf,brms,ubms,fuzzyjoin,arm,reshape2,doBy,lme4,janitor,tidyr,
                readr,dplyr,neonUtilities,minpack.lm,FSA, ggplot2, lubridate)
 
-# setup function to manually predict fish abundance using the three pass method
-predict_function <- function(x, beta, alpha){
-  est <- (alpha*x)/(beta+x)
-  return(est)
-}
-
 # setup the exclusion "in" function
 '%!in%' <- function(x,y)!('%in%'(x,y))
 

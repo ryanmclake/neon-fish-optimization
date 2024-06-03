@@ -58,3 +58,5 @@ total_prob_summary = per_pass_posts |>
   median_qi(value) |>
   mutate(date = ymd(date),
          month = month(date))
+
+readr::write_csv(total_prob_summary, "./input/total_capt_probability.csv")

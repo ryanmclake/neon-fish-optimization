@@ -5,6 +5,7 @@ gc()
 # read the exported files from 01_download_stack_save_NEON_data.R script
 joined_fish <- readr::read_csv("./input/joined_fish_tables.csv")
 predictions <- readr::read_csv("./input/predictions_comparisons_file.csv")
+total_prob_summary <- readr::read_csv("./input/total_capt_probability.csv")
 
 # set the time to see how long it takes
 s = Sys.time()
@@ -13,8 +14,7 @@ s = Sys.time()
 sites <- c(unique(joined_fish$siteID))
 
 three_pass_new_method <- predictions %>%
-  filter(method == "Carle-Strube") %>%
-  left_join(., reach_lengths, by = "reachID")
+  filter(method == "Carle-Strube")
 
 
 for(g in 1:length(sites)){

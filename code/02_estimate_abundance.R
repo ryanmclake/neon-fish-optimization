@@ -2,6 +2,12 @@
 rm(list=ls())
 gc()
 
+# setup function to manually predict fish abundance using the three pass method
+predict_function <- function(x, beta, alpha){
+  est <- (alpha*x)/(beta+x)
+  return(est)
+}
+
 # read the exported files from 01_download_stack_save_NEON_data.R script
 joined_fish <- readr::read_csv("./input/joined_fish_tables.csv")
 
@@ -201,5 +207,5 @@ readr::write_csv(three_pass_prediction, "./input/three_pass_predictions_raw.csv"
 prediction_comparisons <- bind_rows(three_pass_prediction, three_pass_predict_methods_compare) %>%
   arrange(reachID)
 
-readr::write_csv(prediction_comparisons, , "./input/predictions_comparisons_file.csv")
+readr::write_csv(prediction_comparisons, "./input/predictions_comparisons_file.csv")
 
