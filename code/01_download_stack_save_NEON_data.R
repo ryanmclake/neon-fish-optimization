@@ -92,7 +92,7 @@ EF_joined <- EF_fish |>
 readr::write_csv(EF_joined, "./input/joined_fish_tables.csv")
 
 } else {
-  print("You have already downloaded the NEON fish data and saved the joined file, go to script 02_estimate_abundance.R")
+  cat("You have already downloaded the NEON fish data and saved the joined file, go to script 02_estimate_abundance.R")
 }
 
 
