@@ -1,9 +1,18 @@
+# clear your environment and memory
+rm(list=ls())
+gc()
 
+# read the exported files from 01_download_stack_save_NEON_data.R script
+joined_fish <- readr::read_csv("./input/joined_fish_tables.csv")
+predictions <- readr::read_csv("./input/predictions_comparisons_file.csv")
+
+# set the time to see how long it takes
 s = Sys.time()
 
-sites <- c(unique(EF_joined$siteID))
+# set the sites
+sites <- c(unique(joined_fish$siteID))
 
-three_pass_new_method <- prediction_comparisons %>%
+three_pass_new_method <- predictions %>%
   filter(method == "Carle-Strube") %>%
   left_join(., reach_lengths, by = "reachID")
 
@@ -65,9 +74,9 @@ for(g in 1:length(sites)){
                               power.cs.cnvg=numeric(0))		                          # populated with value from monitoring of model convergence in the three pass method
     
     
-    for(n.sites in c(1)){ 			                                                  # add  number of sites
+    for(n.sites in c(1)){ 			                                                    # add  number of sites
       for(n.years in c(seq(from = 5, to = 30, by = 5))){ 		                        # add  number of years
-        for(rhat in c(-0.05)){ 		                                # add  mean rate of population trends(s)
+        for(rhat in c(-0.05)){ 		                                                  # add  mean rate of population trends(s)
           
           ## start simulations
           for(s in 1:n.sims){  
@@ -179,11 +188,11 @@ for(g in 1:length(sites)){
             
             
             
-            # generalized linear model for estimated abundance of the simulated data
+            # generalized model for estimated abundance of the simulated data
             if(n.sites == 1){
               lm.sim.cs=glmer(CSEst ~ YearNumStdz + (1|year),
                               data=result, family=poisson)
-            }else{
+            } else {
               lm.sim.cs=glmer(CSEst ~ YearNumStdz + (1|site) + (1|year),
                               data=result, family=poisson)
             }
