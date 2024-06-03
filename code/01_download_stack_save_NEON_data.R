@@ -9,7 +9,8 @@ if (!"pacman" %in% installed.packages()) install.packages("pacman")
 
 # use pacman to obtain packages
 pacman::p_load(sf,brms,ubms,fuzzyjoin,arm,reshape2,doBy,lme4,janitor,tidyr,
-               readr,dplyr,neonUtilities,minpack.lm,FSA, ggplot2, lubridate)
+               readr,dplyr,neonUtilities,minpack.lm,FSA, ggplot2, lubridate,
+               tidybayes, multiDimBio)
 
 # setup the exclusion "in" function
 '%!in%' <- function(x,y)!('%in%'(x,y))
