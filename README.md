@@ -35,7 +35,12 @@ To get the number of fish caught per pass, we have to combine two data sources i
 values in `DP1.20107.001$fsh_perFish` table. Field staff then bulk count the rest and places those values in the `DP1.20107.001$fsh_bulkCount` table. Data are then filtered to exclude samples that only contain a single pass. The values can then be combined using their eventID between the tables.
 
 ## 2) Estimating fish populations using `FSA` and updated MM model
-### 2.1) Estimating fish populations using `FSA`
+Script `02_estimate_abundance.R` is designed to quantify abundance using the `FSA` package and our own model that is curently in development. The script starts out by looping through and calculating abundance using all five methods and then outputing the mean estiamte and the 95% CIs. Next, we test a new model that quantifies abundance. Its very much in development right now and is not currently in this analysis. 
+
+## 3) Pulling capture probabilities from STAN model
+Script `03_get_capture_probabilities.R` is designed to also quantify abundance using the with a multinomial poisson STAN model that uses reachID and year as model drivers. It takes about 5 minutes to run. It is three chains at about 1500 iterations. The output used is the capture probabilities. 
+
+## 4) Run the power analysis
 
 ...
 
