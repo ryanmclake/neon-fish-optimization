@@ -33,6 +33,29 @@ fish <- neonUtilities::loadByProduct(
 # unpack the fish data
 list2env(fish,envir=.GlobalEnv)
 
+rea <- neonUtilities::loadByProduct(
+  dpID='DP1.20190.001',
+  check.size=F,
+  site = "all",
+  package='expanded',
+  startdate = "2015-01-01",
+  enddate = as.character(Sys.Date()),
+  token = Sys.getenv('NEON_PAT'))
+
+list2env(rea,envir=.GlobalEnv)
+
+mean_wetted_width = rea$rea_widthFieldData %>%
+  clean_names() %>% 
+  dplyr::select(site_id, collect_date, wetted_width) %>% 
+  mutate(year = year(collect_date),
+         month = month(collect_date),
+         year_month = paste(year,month, sep = "_")) %>% 
+  group_by(site_id) %>% 
+  summarize(mean_wetted_width_m = mean(wetted_width, na.rm = T),
+            sd_wetted_width_m = sd(wetted_width, na.rm = T))
+
+readr::write_csv(mean_wetted_width, "./input/mean_wetted_width.csv")
+
 # identify the reach lengths for each reach eithin each stream site
 reach_lengths = fish$fsh_fieldData |> 
   distinct(reachID, measuredReachLength) |>

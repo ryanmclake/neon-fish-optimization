@@ -6,8 +6,9 @@ gc()
 joined_fish <- readr::read_csv("./input/joined_fish_tables.csv")
 predictions <- readr::read_csv("./input/predictions_comparisons_file.csv")
 total_prob_summary <- readr::read_csv("./input/total_capt_probability.csv")
+mean_wetted_width <- readr::read_csv("./input/mean_wetted_width.csv")
 
-# set the time to see how long it takes
+# set the time to see how long it takess
 s = Sys.time()
 
 # set the sites
@@ -29,7 +30,7 @@ for(g in 1:length(sites)){
       filter(siteID == sites[g]) %>%
       na.omit(.)
     
-    mean_wetted_width_pwr <- mean_wetted_widths %>% filter(siteID == sites[g])
+    mean_wetted_width_pwr <- mean_wetted_width %>% filter(siteID == sites[g])
     
     data_for_model <- fuzzyjoin::difference_join(three_pass_data_wide_pwr, 
                                                  mean_wetted_width_pwr, 
@@ -112,7 +113,7 @@ for(g in 1:length(sites)){
                                   paste("year",1:n.years),
                                   paste("pass",1:n.passes)))
             
-            ## generate a range for the population decline (here set to a 5% range)  
+            ## generate a range for the population increase (here set to a 5% range)  
             r=runif(n.sites, rhat-0.05, rhat+0.05) 		 
             trend=log(1+r)
             
