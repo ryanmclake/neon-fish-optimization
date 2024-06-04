@@ -25,27 +25,34 @@ for(g in 1:length(sites)){
     # DATA FOR THTREE PASS #
     three_pass_data_wide_pwr <- three_pass_new_method %>%
       left_join(., total_prob_summary, by = c("reachID"), relationship = "many-to-many") %>%
+      left_join(., joined_fish, by = c("reachID"), relationship = "many-to-many") %>%
       na.omit(.) %>%
       rename(cap_prob = value, cap_prob_low = .lower, cap_prob_high = .upper) %>%
+      rename(siteID = siteID.x) %>%
       filter(siteID == sites[g]) %>%
-      na.omit(.)
+      mutate(year = lubridate::year(date.x),
+             month = lubridate::month(date.x)) %>%
+      na.omit(.) %>%
+      select(-month.y, -year.y, -year.x, -month.x)
     
-    mean_wetted_width_pwr <- mean_wetted_width %>% filter(siteID == sites[g])
+    mean_wetted_width_pwr <- mean_wetted_width %>% 
+      rename(siteID = site_id) %>%
+      filter(siteID == sites[g])
     
     data_for_model <- fuzzyjoin::difference_join(three_pass_data_wide_pwr, 
                                                  mean_wetted_width_pwr, 
                                                  by = c("year", "month"), 
                                                  max_dist = 1, mode = "left") %>%
-      dplyr::select(-year.y, -month.y, -sd_wetted_width_m) %>%
-      rename(month = month.x, year = year.x) %>%
+      dplyr::select(-year.y, -month.y, -year.x, -month.x, -sd_wetted_width_m) %>%
       group_by_at(vars(-mean_wetted_width_m)) %>%
       summarise(mean_wetted_width_m = mean(mean_wetted_width_m)) %>%
       ungroup(.) %>%
       fill(measuredReachLength) |>
-      arrange(year)
+      arrange(date.x) %>%
+      mutate(year = lubridate::year(date.x))
     
     ##Abundance model
-    model.pop.threepass=glmer(estimate~(1|year)+(1|reach), 
+    model.pop.threepass=glmer(estimate~(1|year)+(1|reach.x), 
                               data=data_for_model, family=poisson, 
                               offset=log(measuredReachLength/
                                            max(data_for_model$measuredReachLength)))

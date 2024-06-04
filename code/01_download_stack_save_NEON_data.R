@@ -50,7 +50,7 @@ mean_wetted_width = rea$rea_widthFieldData %>%
   mutate(year = year(collect_date),
          month = month(collect_date),
          year_month = paste(year,month, sep = "_")) %>% 
-  group_by(site_id) %>% 
+  group_by(month, year, site_id) %>% 
   summarize(mean_wetted_width_m = mean(wetted_width, na.rm = T),
             sd_wetted_width_m = sd(wetted_width, na.rm = T))
 
